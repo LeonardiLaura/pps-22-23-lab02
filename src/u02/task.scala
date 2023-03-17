@@ -154,10 +154,50 @@ object task extends App:
 
   println("TASK 8")
 
-  object Option:
-    def filter[A](x: A,y: Int): A = x
+  object Optionals extends App:
 
+    enum Option[A]:
+      case Some(a: A)
+      case None() // here parens are needed because of genericity
 
-  Option.filter(Some(5),(_ > 2))
+    object Option:
+      def isEmpty[A](opt: Option[A]): Boolean = opt match
+        case None() => true
+        case _ => false
+
+      def orElse[A, B >: A](opt: Option[A], orElse: B): B = opt match
+        case Some(a) => a
+        case _ => orElse
+
+      def flatMap[A, B](opt: Option[A])(f: A => Option[B]): Option[B] = opt match
+        case Some(a) => f(a)
+        case _ => None()
+
+      def filter[A](x: Option[A])(cond: A => Boolean): Option[A] = x match
+        case Some(a) if cond(a) => x
+        case _ => None()
+
+      def map[A](x: Option[A])(cond: A => Boolean): Option[Boolean] = x match
+        case None() => None()
+        case Some(a) if cond(a) => Some(true)
+        case _ => Some(false)
+
+      def fold[A](x: Option[A])(default: A)(cond: A => A): A = x match
+        case None() => default
+        case Some(a) => cond(a)
+
+  import Optionals.Option.*
+
+  println("TEST FILTER")
+  println(filter(Some(5))(_ > 2))  // Some(5)
+  println(filter(Some(5))(_ > 8)) // None
+  println(filter(Optionals.Option.None[Int]())(_ > 2)) // None
+  println("TEST MAP")
+  println(map(Some(5))(_ > 2)) // Some(true)
+  println(map(Some(5))(_ > 8)) // Some(false)
+  println(map(None[Int]())(_ > 2)) // None
+  println("TEST FOLD")
+  println(fold(Some(5))(1)(_ + 1)) // 6
+  println(fold(None[Int]())(1)(_ + 1)) // 1
 
 
