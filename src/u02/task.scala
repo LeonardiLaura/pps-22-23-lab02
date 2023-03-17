@@ -32,14 +32,7 @@ object task extends App:
   val x : String => Boolean = (y: String) => y match
     case "pippo" => true
     case _ => false
-
-  /*
-  println(x("pippo"))
-  val notx = neg(x)
-  println(notx("pippo"))
-  println(x("pippo") && !notx("pippo"))
-  */
-
+  
   val empty: String => Boolean = _ == "" // predicate on strings
   val notEmpty = neg(empty) // which type of notEmpty?
   println(notEmpty("foo"))  // true
